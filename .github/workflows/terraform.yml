@@ -1,0 +1,27 @@
+name: Rotate AWS IAM Keys
+
+on:
+  workflow_dispatch:
+  #schedule:
+   # - cron: '*/5 * * * *' # Every 10 minutes
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+      
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_version: "1.2.3"
+      
+    - name: Terraform Init
+      run: terraform init
+      
+    - name: Terraform Apply
+      run: terraform apply -auto-approve -replace="aws_iam_access_key.user_key"
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
