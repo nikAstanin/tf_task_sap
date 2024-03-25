@@ -1,0 +1,39 @@
+name: Rotating keys with OIDC
+
+on:
+  workflow_dispatch:
+  #schedule:
+   # - cron: '*/5 * * * *'
+
+jobs:
+  rotate-keys:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      
+      # Если вам нужно установить Terraform:
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: "1.2.3" # Используйте желаемую версию Terraform
+      
+      - name: Configure AWS credentials from GitHub Actions OIDC Provider
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: us-east-1
+          role-to-assume: arn:aws:iam::033144466865:role/TF_role
+          role-session-name: GitHubActions
+
+      # Далее, шаги для инициализации и применения Terraform, если они вам нужны:
+      - name: Terraform Init
+        run: terraform init
+        
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
+
+      # Вы можете добавить дополнительные шаги, например, для отправки уведомлений или логирования
