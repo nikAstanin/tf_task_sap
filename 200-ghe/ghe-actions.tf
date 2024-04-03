@@ -1,5 +1,5 @@
-data "aws_iam_user" "ghe-actions-user" {
-  user_name = "test-ghe-actions-user"
+resource "aws_iam_user" "ghe_actions_user" {
+  name = "${var.branch}-ghe-actions-user"
 }
 
 resource "aws_iam_access_key" "gh_actions_user_key" {
