@@ -28,11 +28,11 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-region: us-east-1
+          role-to-assume: arn:aws:iam::033144466865:role/TF_role
+          role-session-name: GitHubActions
 
       - name: Terraform Init and Apply for 200-ghe
         run: |
           cd 200-ghe
           terraform init
           terraform apply -auto-approve -var="branch=${{ matrix.branch }}"
-          role-to-assume: arn:aws:iam::033144466865:role/TF_role
-          role-session-name: GitHubActions
