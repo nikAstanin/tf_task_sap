@@ -9,3 +9,7 @@ variable "test_key_user" {
   type        = string
   default     = "test-key-user"
 }
+
+variable "branch" {
+  type = string
+}
