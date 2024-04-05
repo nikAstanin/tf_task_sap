@@ -36,3 +36,9 @@ jobs:
           cd 200-ghe
           terraform init
           terraform apply -auto-approve -var="branch=${{ matrix.branch }}"
+
+      - name: Terraform Init and Apply for 300-ghe
+        run: |
+          cd 300-ghe-backup
+          terraform init
+          terraform apply -auto-approve -var="branch=${{ matrix.branch }}"
