@@ -35,7 +35,7 @@ jobs:
         run: |
           cd 200-ghe
           terraform init
-          terraform apply -auto-approve -var="branch=${{ matrix.branch }}"
+          terraform apply -auto-approve -var="branch=${{ matrix.branch }}" -replace="aws_iam_access_key.gh_actions_user_key"
 
       - name: Terraform Init and Apply for 300-ghe
         run: |
