@@ -2,9 +2,7 @@ resource "aws_iam_user" "ghe_actions_user" {
   name = "${var.branch}-ghe-actions-user"
 
   lifecycle {
-    ignore_changes = [
-      "*",
-    ]
+    ignore_changes = all
   }
 }
 
