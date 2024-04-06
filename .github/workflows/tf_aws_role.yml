@@ -35,7 +35,7 @@ jobs:
         run: |
           cd 200-ghe
           terraform init -backend-config=../backend.tf
-          #terraform import aws_iam_user.ghe_actions_user ${{ matrix.branch }}-ghe-actions-user || true
+          terraform import aws_iam_user.ghe_actions_user ${{ matrix.branch }}-ghe-actions-user || true
           terraform apply -auto-approve -var="branch=${{ matrix.branch }}"
 
       - name: Terraform Init and Apply for 300-ghe
