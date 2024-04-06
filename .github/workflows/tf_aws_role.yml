@@ -31,13 +31,11 @@ jobs:
           role-to-assume: arn:aws:iam::033144466865:role/TF_role
           role-session-name: GitHubActions
 
-      - name: Import IAM User
-        run: terraform import aws_iam_user.ghe_actions_user ${{ matrix.branch }}-ghe-actions-user
-
-      - name: Terraform Init and Apply for 200-ghe
+      - name: Terraform workflow for 200-ghe
         run: |
           cd 200-ghe
           terraform init
+          terraform import aws_iam_user.ghe_actions_user ${{ matrix.branch }}-ghe-actions-user || true
           terraform apply -auto-approve -var="branch=${{ matrix.branch }}"
 
       - name: Terraform Init and Apply for 300-ghe
