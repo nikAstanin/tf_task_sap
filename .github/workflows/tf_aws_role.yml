@@ -36,6 +36,7 @@ jobs:
           cd 200-ghe
           terraform init -backend-config=../backend.tf
           ls -la ../
+          terraform plan -var="branch=${{ matrix.branch }}"
           # terraform import aws_iam_user.ghe_actions_user ${{ matrix.branch }}-ghe-actions-user || true
-          terraform import -input=false aws_iam_user.ghe_actions_user ${{ matrix.branch }}-ghe-actions-user || true
+          # terraform import -input=false aws_iam_user.ghe_actions_user ${{ matrix.branch }}-ghe-actions-user || true
           terraform apply -auto-approve -var="branch=${{ matrix.branch }}"
