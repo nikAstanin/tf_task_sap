@@ -1,3 +1,4 @@
 variable "branch" {
-  type = string
+  type = list(string)
+  default = ["dev", "stage", "prod"]
 }
