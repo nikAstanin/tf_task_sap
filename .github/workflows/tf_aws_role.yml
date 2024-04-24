@@ -47,10 +47,14 @@ jobs:
           # terraform import -input=false aws_iam_user.ghe_actions_user ${{ matrix.branch }}-ghe-actions-user || true
           # terraform apply -auto-approve -var="branch=${{ matrix.branch }}"
 
-      #- name: Terraform workflow for 300-ghe-backup
-       # run: | 
-        #  cd 300-ghe-backup
-         # terraform init
-          #ls -la ../
-          #terraform plan -var="branch=${{ matrix.branch }}"
-          #terraform apply -auto-approve -var="branch=${{ matrix.branch }}"
+      - name: Terraform workflow for 300-ghe-backup
+        run: | 
+          cd 300-ghe-backup
+          terraform init
+          terraform plan
+          branches=("dev" "stage" "prod")
+          for branch in "${branches[@]}"
+          do
+            echo "Replacing key for $branch..."
+            terraform apply -auto-approve -replace="aws_iam_access_key.gh_backup_user_key[\"$branch\"]"
+          done
