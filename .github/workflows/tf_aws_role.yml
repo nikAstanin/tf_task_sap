@@ -2,8 +2,8 @@ name: Rotating keys with OIDC
 
 on:
   workflow_dispatch:
-  #schedule:
-   # - cron: '*/5 * * * *'
+  schedule:
+    - cron: '0 * * * *'
 
 jobs:
   rotate-keys:
@@ -11,16 +11,18 @@ jobs:
     permissions:
       id-token: write
       contents: read
+    #strategy:
+      #matrix:
+        #branch: [dev, stage, prod]
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
       
-      # Если вам нужно установить Terraform:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         with:
-          terraform_version: "1.2.3" # Используйте желаемую версию Terraform
+          terraform_version: "1.2.3"
       
       - name: Configure AWS credentials from GitHub Actions OIDC Provider
         uses: aws-actions/configure-aws-credentials@v1
@@ -29,9 +31,30 @@ jobs:
           role-to-assume: arn:aws:iam::033144466865:role/TF_role
           role-session-name: GitHubActions
 
-      # Далее, шаги для инициализации и применения Terraform, если они вам нужны:
-      - name: Terraform Init
-        run: terraform init
-        
-      - name: Terraform Apply
-        run: terraform apply -auto-approve -replace="aws_iam_access_key.user_key"
+      - name: Terraform workflow for 200-ghe
+        run: | 
+          cd 200-ghe
+          terraform init
+          terraform plan
+          branches=("dev" "stage" "prod")
+          for branch in "${branches[@]}"
+          do
+            echo "Replacing key for $branch..."
+            terraform apply -auto-approve -replace="aws_iam_access_key.gh_actions_user_key[\"$branch\"]"
+          done
+          # terraform plan -var="branch=${{ matrix.branch }}"
+          # terraform import aws_iam_user.ghe_actions_user ${{ matrix.branch }}-ghe-actions-user || true
+          # terraform import -input=false aws_iam_user.ghe_actions_user ${{ matrix.branch }}-ghe-actions-user || true
+          # terraform apply -auto-approve -var="branch=${{ matrix.branch }}"
+
+      - name: Terraform workflow for 300-ghe-backup
+        run: | 
+          cd 300-ghe-backup
+          terraform init
+          terraform plan
+          branches=("dev" "stage" "prod")
+          for branch in "${branches[@]}"
+          do
+            echo "Replacing key for $branch..."
+            terraform apply -auto-approve -replace="aws_iam_access_key.gh_backup_user_key[\"$branch\"]"
+          done
