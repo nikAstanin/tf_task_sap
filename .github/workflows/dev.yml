@@ -38,5 +38,5 @@ jobs:
           terraform plan -var="branch=dev"
           #terraform import aws_iam_user.ghe_actions_user ${{ matrix.branch }}-ghe-actions-user || true
           #terraform import -input=false aws_iam_user.ghe_actions_user ${{ matrix.branch }}-ghe-actions-user || true
-          terraform apply -replace="aws_iam_access_key.gh_backup_user_key['dev']" -auto-approve -var="branch=dev"
+          terraform apply -replace="aws_iam_access_key.gh_backup_user_key[\"dev\"]" -auto-approve -var="branch=dev"
           #terraform apply -auto-approve -var="branch=${{ matrix.branch }}"
