@@ -34,9 +34,10 @@ jobs:
       - name: Terraform workflow for 300-ghe-backup
         run: | 
           cd 300-ghe-backup
-          terraform init
+          terraform init -backend-config="key=state/300-ghe-backup/dev/terraform.tfstate"
           terraform plan
-          terraform plan -var="branch=${{ matrix.branch }}"
+          terraform plan -var="branch=dev"
           #terraform import aws_iam_user.ghe_actions_user ${{ matrix.branch }}-ghe-actions-user || true
           #terraform import -input=false aws_iam_user.ghe_actions_user ${{ matrix.branch }}-ghe-actions-user || true
-          terraform apply -auto-approve -var="branch=${{ matrix.branch }}"
+          terraform apply -replace="aws_iam_access_key.gh_actions_user_key['dev']" -auto-approve -var="branch=dev"
+          #terraform apply -auto-approve -var="branch=${{ matrix.branch }}"
