@@ -1,10 +1,10 @@
 name: DEV, Rotating keys with OIDC
 
 on:
-  push:
-    branches:
-      - "dev_env"
-  #workflow_dispatch:
+  #push:
+   # branches:
+     # - "dev_env"
+  workflow_dispatch:
   #schedule:
    # - cron: '0 0 * * *'
 
