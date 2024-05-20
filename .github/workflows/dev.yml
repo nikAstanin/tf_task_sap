@@ -1,9 +1,12 @@
 name: DEV, Rotating keys with OIDC
 
 on:
-  workflow_dispatch:
-  schedule:
-    - cron: '0 0 * * *'
+  push:
+    branches:
+      - "dev_env"
+  #workflow_dispatch:
+  #schedule:
+   # - cron: '0 0 * * *'
 
 jobs:
   rotate-keys:
@@ -35,8 +38,8 @@ jobs:
         run: | 
           cd 300-ghe-backup
           terraform init -backend-config="key=state/300-ghe-backup/dev/terraform.tfstate"
-          terraform plan -var="branch=dev"
+          terraform plan -var="branch=${GITHUB_REF##*/}"
           #terraform import aws_iam_user.ghe_actions_user ${{ matrix.branch }}-ghe-actions-user || true
           #terraform import -input=false aws_iam_user.ghe_actions_user ${{ matrix.branch }}-ghe-actions-user || true
-          terraform apply -replace="aws_iam_access_key.gh_backup_user_key" -auto-approve -var="branch=dev"
+          terraform apply -replace="aws_iam_access_key.gh_backup_user_key" -auto-approve -var="branch=${GITHUB_REF##*/}"
           #terraform apply -auto-approve -var="branch=${{ matrix.branch }}"
